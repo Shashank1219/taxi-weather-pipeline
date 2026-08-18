@@ -1,0 +1,32 @@
+months:
+  - "2026-01"
+  - "2026-02"
+  - "2026-03"
+  - "2026-04"
+  - "2026-05"
+
+taxi:
+  url_template: "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{month}.parquet"
+  bronze_dir: "data/bronze/taxi"
+
+weather:
+  latitude: 40.7128
+  longitude: -74.0060
+  timezone: "America/New_York"
+  hourly_vars:
+    - temperature_2m
+    - precipitation
+    - snowfall
+    - wind_speed_10m
+    - weather_code
+  bronze_path: "data/bronze/weather/weather_hourly.parquet"
+
+dq:
+  weather_match_rate_threshold: 0.95
+  passenger_count_min: 1
+  passenger_count_max: 8
+
+http:
+  timeout_seconds: 30
+  max_retries: 3
+  backoff_base_seconds: 2
