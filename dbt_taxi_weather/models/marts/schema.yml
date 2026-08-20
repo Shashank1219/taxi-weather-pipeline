@@ -15,3 +15,25 @@ models:
         tests:
           - accepted_values:
               values: ["weekday", "weekend"]
+  - name: demand_by_borough
+    columns:
+      - name: pickup_borough
+        tests: [not_null]
+  - name: dq_quarantine_trend
+    columns:
+      - name: trip_month
+        tests: [not_null]
+  - name: payment_mix
+    columns:
+      - name: payment_type_label
+        tests: [not_null]
+  - name: revenue_efficiency_by_hour
+    columns:
+      - name: hour_of_day
+        tests: [not_null, unique]
+  - name: weather_speed_impact
+    columns:
+      - name: day_type
+        tests:
+          - accepted_values:
+              values: ["weekday", "weekend"]

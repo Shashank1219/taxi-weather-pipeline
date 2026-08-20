@@ -4,6 +4,9 @@ with trips as (
 ),
 weather as (
     select * from {{ ref('stg_weather') }}
+),
+zones as (
+    select * from {{ ref('stg_zone_lookup') }}
 )
 select
     trips.*,
@@ -12,9 +15,11 @@ select
     weather.snowfall,
     weather.wind_speed_10m,
     weather.weather_code,
+    zones.borough as pickup_borough,
+    zones.zone as pickup_zone,
     (unix_timestamp(trips.dropoff_ts) - unix_timestamp(trips.pickup_ts)) / 60 as trip_minutes,
     date_format(trips.pickup_ts, 'EEEE') as weekday,
     case when weather.precipitation > 0.1 then true else false end as is_precipitation
 from trips
-left join weather
-    on trips.pickup_hour = weather.weather_hour_local
+left join weather on trips.pickup_hour = weather.weather_hour_local
+left join zones on trips.pickup_location_id = zones.location_id

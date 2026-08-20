@@ -7,3 +7,5 @@ sources:
     tables:
       - name: trips_input
       - name: weather_input
+      - name: zone_lookup
+      - name: quarantine
