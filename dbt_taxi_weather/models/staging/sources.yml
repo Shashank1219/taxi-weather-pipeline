@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: silver_raw
+    catalog: taxi_case
+    schema: silver
+    tables:
+      - name: trips_input
+      - name: weather_input

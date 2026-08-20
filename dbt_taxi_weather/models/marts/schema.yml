@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: trips_by_hour_weekday
+    columns:
+      - name: hour_of_day
+        tests: [not_null]
+  - name: daily_weather_ridership
+    columns:
+      - name: trip_date
+        tests: [not_null, unique]
+  - name: weather_impact
+    columns:
+      - name: day_type
+        tests:
+          - accepted_values:
+              values: ["weekday", "weekend"]
