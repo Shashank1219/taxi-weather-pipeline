@@ -1,5 +1,4 @@
 """Typed configuration loading."""
-
 from __future__ import annotations
 
 import calendar
@@ -7,6 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
+from dotenv import load_dotenv
 
 
 @dataclass(frozen=True)
@@ -45,11 +45,25 @@ class DQConfig:
 
 
 @dataclass(frozen=True)
+class S3Config:
+    bucket: str
+    taxi_prefix: str
+    weather_prefix: str
+
+    def taxi_key_for_month(self, month):
+        return f"{self.taxi_prefix}/yellow_tripdata_{month}.parquet"
+
+    def weather_key(self):
+        return f"{self.weather_prefix}/weather_hourly.parquet"
+
+
+@dataclass(frozen=True)
 class PipelineConfig:
     months: list[str]
     taxi: TaxiConfig
     weather: WeatherConfig
     dq: DQConfig
+    s3: S3Config
     http: HttpConfig = field(default_factory=HttpConfig)
 
 
@@ -71,7 +85,10 @@ def expected_hourly_rows(start_date, end_date):
     return num_days * 24
 
 
-def load_config(path: str | Path = "config/pipeline.yml"):
+def load_config(path: str | Path = "config/pipeline.yaml"):
+    # Load .env (for AWS credentials) and pipeline.yaml (for everything else)
+    load_dotenv()
+
     config_path = Path(path)
     if not config_path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path.resolve()}")
@@ -96,6 +113,11 @@ def load_config(path: str | Path = "config/pipeline.yml"):
             weather_match_rate_threshold=raw["dq"]["weather_match_rate_threshold"],
             passenger_count_min=raw["dq"]["passenger_count_min"],
             passenger_count_max=raw["dq"]["passenger_count_max"],
+        ),
+        s3=S3Config(
+            bucket=raw["s3"]["bucket"],
+            taxi_prefix=raw["s3"]["taxi_prefix"],
+            weather_prefix=raw["s3"]["weather_prefix"],
         ),
         http=HttpConfig(**raw.get("http", {})),
     )
