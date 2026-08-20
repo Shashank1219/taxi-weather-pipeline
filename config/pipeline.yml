@@ -30,3 +30,8 @@ http:
   timeout_seconds: 30
   max_retries: 3
   backoff_base_seconds: 2
+
+s3:
+  bucket: "taxi-weather-raw"
+  taxi_prefix: "bronze/taxi"
+  weather_prefix: "bronze/weather"
